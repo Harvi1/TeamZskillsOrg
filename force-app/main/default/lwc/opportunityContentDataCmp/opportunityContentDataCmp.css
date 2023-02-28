@@ -10,7 +10,7 @@
     right: 1.5rem;
 }
 .scrollContainer {
-    max-height: 300px;
+    max-height: 400px;
     overflow: auto;
     position: relative;
     border: 1px solid black;

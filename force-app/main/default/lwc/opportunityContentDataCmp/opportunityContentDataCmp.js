@@ -126,17 +126,17 @@ export default class OpportunityContentDataCmp extends LightningElement {
                         } else {
                             this.NoData = true;
                         }
-                    } else if (event.key === 'Backspace') {
+                    } else{
                         this.onsearchHiderecord = true;
                         this.onsearchshowrecord = false;
                     }
                 }).catch(error => {
                     this.records = null;
                     this.NoData = true;
-                    this.onsearchHiderecord = true;
+                    
 
                 })
-        } else if (this.keySearch == '') {
+        } /*else if (this.keySearch == '') {
             const event = new ShowToastEvent({
                 title: 'Information',
                 message: 'Please select the search value',
@@ -146,48 +146,8 @@ export default class OpportunityContentDataCmp extends LightningElement {
             this.dispatchEvent(event);
 
             this.IsLoading = false;
-        } else {
-            this.onsearchHiderecord = true;
-        }
+        }*/
         
-        //this.keySearch = event.target.value;
-        // // console.log('this.keySearch..........', this.keySearch);
-        // // console.log('this.keySearch event value', event.target.value);
-        // // this.IsLoading = true;
-
-        // // if (event.key === 'Enter') {
-        // //     const stageName = getFieldValue(this.opportunity.data, STAGE_NAME);
-        // //     retrieveContent({ keySearch: this.keySearch })
-        // //     .then(result => {
-        // //         this.records = result;
-        // //         console.log('this.records 121',JSON.stringify(this.records));
-        // //         this.onsearchshowrecord = true;
-        // //         if (this.records.length > 0) {
-        // //             this.NoData = false;
-        // //         } else {
-        // //             this.NoData = true;
-        // //         }
-        // //         this.IsLoading = false;
-        // //     }).catch(error => {
-        // //         this.records = null;
-        // //         this.IsLoading = false;
-        // //         this.NoData = true;
-        // //     })
-        // // } else if(event.key === 'Backspace'){
-        // //     this.keySearch = '';
-        // //     // this.onsearchshowrecord = true;
-        // // }/*else if(this.keySearch == '') {
-        //     //this.keySearch = event.target.value; // Update the search query
-        //     const event = new ShowToastEvent({
-        //         title: 'Information',
-        //         message: 'Please select the search value',
-        //         variant: 'info',
-        //         mode: 'dismissable'
-        //     });
-        //     this.dispatchEvent(event);
-
-        //     this.IsLoading = false;
-        //}
     }
     handleScroll(event) {
     let area = this.template.querySelector('.scrollArea');
