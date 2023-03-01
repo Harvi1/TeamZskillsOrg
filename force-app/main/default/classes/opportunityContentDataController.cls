@@ -56,16 +56,30 @@ public class opportunityContentDataController {
        keySearch = '%' + keySearch + '%';
 
         try {
+            Set<Id> contIds = new Set<Id>();
             List<Content__c> mycontentList = [Select Id,Name, opportunity_stage__c, content_tags__c, document_title__c, thumbs_count__c, 
                                               recommended_count__c, shared_count__c, views_count__c,time_created__c, 
                                               document_description__c,time_last_edited__c From Content__c
                                               WHERE opportunity_stage__c LIKE :keySearch OR 
                                               content_tags__c LIKE: keySearch OR 
                                               document_title__c LIKE :keySearch];
+
+            for(Content__c cont : mycontentList){
+                contIds.add(cont.Id);
+            }
             
             system.debug('mycontentList>>>>:'+mycontentList);
-            
-            
+
+            List<Content__c> conRchTxtList = [Select Id,Name, opportunity_stage__c, content_tags__c, document_title__c, thumbs_count__c, 
+            recommended_count__c, shared_count__c, views_count__c,time_created__c, 
+            document_description__c,time_last_edited__c From Content__c];
+
+            for(Content__c cont : conRchTxtList){
+                if(cont.document_description__c != null && cont.document_description__c.contains(keySearch) && !contIds.contains(cont.Id)){
+                    mycontentList.add(cont);
+                }
+            }
+
             return mycontentList;    
         } catch (Exception e) {
             throw new AuraHandledException('No Record Found..'+e.getMessage());

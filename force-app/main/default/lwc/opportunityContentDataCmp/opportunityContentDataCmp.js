@@ -1,18 +1,16 @@
 import { LightningElement, api, track, wire } from 'lwc';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { subscribe, onError } from 'lightning/empApi';
 import getoppwithContentdata from '@salesforce/apex/opportunityContentDataController.getcontentdata';
 import updatecontentData from '@salesforce/apex/opportunityContentDataController.updatecontentData';
 import retrieveContent from '@salesforce/apex/opportunityContentDataController.retrieveContent';
-import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import RevspaceImage from '@salesforce/resourceUrl/RevspaceImage';
 import STAGE_NAME from '@salesforce/schema/Opportunity.StageName';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 const fields = [STAGE_NAME];
-const DELAY = 100;
 
 export default class OpportunityContentDataCmp extends LightningElement {
-    @api recordId;
-    @track opportunity;
     @track data = [];
     @track error;
     @track oppstage;
@@ -21,39 +19,70 @@ export default class OpportunityContentDataCmp extends LightningElement {
     @track serachkey = '';
     @track records = [];
     @track onsearchshowrecord = false;
-    @track onsearchHiderecord = false;
+    @track onclickdata = false;
     @track searchStageName = '';
-    @track keySearch = '';
     subscription = {};
     @api channelName = '/event/Content_Event__e';
     NoData = false;
     visblityPlay = false;
     visblityROI = false;
+    opportunityStageName;
+    @api recordId;
+
+    RImage = RevspaceImage;
 
     @wire(getRecord, { recordId: '$recordId', fields })
     opportunity;
 
-    connectedCallback() {
-        this.registerErrorListener();
-        this.handleSubscribe();
+    constructor(){
+        super();
     }
 
-    @wire(getoppwithContentdata, { recordId: '$recordId' })
-    wiredContentData({ error, data }) {
-        if (data) {
-            console.log('42 wire method called!! getoppwithContentdata', JSON.stringify(data));
-            this.records = data;
-            this.onsearchHiderecord = true;
-            this.onsearchshowrecord = false;
+    connectedCallback() {
+        this.IsLoading = true;
+
+        // console.log('this.opportunityStageName--',this.recordId);
+
+        // this.opportunityStageName = getFieldValue(this.opportunity.data, STAGE_NAME)
+
+        getoppwithContentdata({ recordId: this.recordId })
+        .then(result => {
+            this.records = result;
+            this.onsearchshowrecord = true;
+            if (this.records.length > 0) {
+                this.NoData = false;
+            } else {
+                this.NoData = true;
+            }
             this.IsLoading = false;
-        } else if (error) {
-            this.error = error;
-            console.log('47 wire method called!! getoppwithContentdata', JSON.stringify(error));
+        }).catch(error => {
             this.records = null;
             this.IsLoading = false;
             this.NoData = true;
-        }
+        })
+
+        this.registerErrorListener();
+        this.handleSubscribe();
+
+        // console.log('this.opportunityStageName--',this.opportunity.data);
+        // console.log('this.opportunityStageName--',getFieldValue(this.opportunity.data, STAGE_NAME));
     }
+
+    // @wire(getoppwithContentdata, { recordId: '$recordId' })
+    // wiredContentData({ error, data }) {
+    //     if (data) {
+    //         console.log('42 wire method called!! getoppwithContentdata', JSON.stringify(data));
+    //         this.records = data;
+    //         this.onsearchshowrecord = true;
+    //         this.IsLoading = false;
+    //     } else if (error) {
+    //         this.error = error;
+    //         console.log('47 wire method called!! getoppwithContentdata', JSON.stringify(error));
+    //         this.records = null;
+    //         this.IsLoading = false;
+    //         this.NoData = true;
+    //     }
+    // }
 
     @wire(updatecontentData, { oppStage: '$oppstage' })
     updatedwiredContentData({ error, data }) {
@@ -62,7 +91,7 @@ export default class OpportunityContentDataCmp extends LightningElement {
             this.records = data;
             console.log('60 wire method called!! getoppwithContentdata', JSON.stringify(this.records));
             this.IsLoading = false;
-            if (this.records.length > 0) {
+            if (this.records.length>0) {
                 console.log('63 wire method called!! getoppwithContentdata', JSON.stringify(this.records));
                 this.NoData = false;
             } else {
@@ -77,7 +106,6 @@ export default class OpportunityContentDataCmp extends LightningElement {
             this.NoData = true;
         }
     }
-
     handleSubscribe() {
         this.IsLoading = true;
         console.log('handleSubscribe method called');
@@ -89,15 +117,14 @@ export default class OpportunityContentDataCmp extends LightningElement {
             self.oppstage = objData.Status__c;
             self.recordId = objData.RecordId__c;
         };
-
         // Invoke subscribe method of empApi. Pass reference to messageCallback
         subscribe(this.channelName, -1, messageCallback)
-            .then(response => {
-                // Response contains the subscription information on subscribe call
-                console.log('Subscription request sent to: ', JSON.stringify(response.channel));
-                this.IsLoading = false;
-                this.subscription = response;
-            });
+        .then(response => {
+            // Response contains the subscription information on subscribe call
+            console.log('Subscription request sent to: ', JSON.stringify(response.channel));
+            this.IsLoading = false;
+            this.subscription = response;
+        });
     }
 
     registerErrorListener() {
@@ -110,66 +137,19 @@ export default class OpportunityContentDataCmp extends LightningElement {
         console.log(event.detail.openSections);
     }
 
-    handleKeyUp(event) {
-        this.keySearch = event.target.value;
-        
-        if (this.keySearch !== '') {
-            retrieveContent({ keySearch: this.keySearch })
-                .then(result => {
-                    if (event.key === 'Enter') {
-                        this.records = result;
-                        console.log('117 this.records on search click...', JSON.stringify(this.records));
-                        this.onsearchshowrecord = true;
-                        this.onsearchHiderecord = false;
-                        if (this.records.length > 0) {
-                            this.NoData = false;
-                        } else {
-                            this.NoData = true;
-                        }
-                    } else{
-                        this.onsearchHiderecord = true;
-                        this.onsearchshowrecord = false;
-                    }
-                }).catch(error => {
-                    this.records = null;
-                    this.NoData = true;
-                    
+    handleSearchchange(event) {
+        this.searchStageName = event.target.value;
 
-                })
-        } /*else if (this.keySearch == '') {
-            const event = new ShowToastEvent({
-                title: 'Information',
-                message: 'Please select the search value',
-                variant: 'info',
-                mode: 'dismissable'
-            });
-            this.dispatchEvent(event);
+        console.log('this.searchStageName lenght',this.searchStageName.length);
 
-            this.IsLoading = false;
-        }*/
-        
-    }
-    handleScroll(event) {
-    let area = this.template.querySelector('.scrollArea');
-    let threshold = 5 * event.target.clientHeight;
-    let areaHeight = area.clientHeight;
-    let scrollTop = event.target.scrollTop;
-    console.log("scrollTop:" + JSON.stringify(scrollTop));
-    if (areaHeight - threshold < scrollTop) {
-      let t = this.records.length;
-      this.data.push(this.result[t]);
-      console.log("data after push--------- :" + JSON.stringify(this.data));
-      //this.Contentdata.push( {id:i+t, name:"Row "+(i+t), desc: "Example Row "+(i+t)} );
-    }
-  }
-
-    /*handleSearchclick() {
         this.IsLoading = true;
-        if (this.keySearch !== '') {
-            retrieveContent({ keySearch: this.keySearch })
+        if (this.searchStageName === '') {
+            this.opportunityStageName = getFieldValue(this.opportunity.data, STAGE_NAME)
+            console.log('this.opportunityStageName--',this.opportunity.data);
+
+            retrieveContent({ keySearch: this.opportunityStageName })
             .then(result => {
                 this.records = result;
-                console.log('143 this.records on search click...', JSON.stringify(this.records));
                 this.onsearchshowrecord = true;
                 if (this.records.length > 0) {
                     this.NoData = false;
@@ -182,19 +162,59 @@ export default class OpportunityContentDataCmp extends LightningElement {
                 this.IsLoading = false;
                 this.NoData = true;
             })
-        } 
-        else if(this.keySearch == '') {
-            const event = new ShowToastEvent({
-                title: 'Information',
-                message: 'Please select the search value',
-                variant: 'info',
-                mode: 'dismissable'
-            });
-            this.dispatchEvent(event);
+        } else {
+            if(this.searchStageName.length <= 2){
+                this.IsLoading = false;
+                return
+            }
 
-            this.IsLoading = false;
+            retrieveContent({ keySearch: this.searchStageName })
+            .then(result => {
+                this.records = result;
+                this.onsearchshowrecord = true;
+                if (this.records.length > 0) {
+                    this.NoData = false;
+                } else {
+                    this.NoData = true;
+                }
+                this.IsLoading = false;
+            }).catch(error => {
+                this.records = null;
+                this.IsLoading = false;
+                this.NoData = true;
+            })
         }
-    }*/
+    }
+    // handleEnter() {
+    //     this.IsLoading = true;
+    //     if (this.searchStageName !== '') {
+    //         retrieveContent({ keySearch: this.searchStageName })
+    //         .then(result => {
+    //             this.records = result;
+    //             this.onsearchshowrecord = true;
+    //             if (this.records.length > 0) {
+    //                 this.NoData = false;
+    //             } else {
+    //                 this.NoData = true;
+    //             }
+    //             this.IsLoading = false;
+    //         }).catch(error => {
+    //             this.records = null;
+    //             this.IsLoading = false;
+    //             this.NoData = true;
+    //         })
+    //     } 
+    //     else if(this.searchStageName == '') {
+    //         const event = new ShowToastEvent({
+    //             title: 'Information',
+    //             message: 'Please select the search value',
+    //             variant: 'info',
+    //             mode: 'dismissable'
+    //         });
+    //         this.dispatchEvent(event);
+    //         this.IsLoading = false;
+    //     }
+    // }
 
     get iconName1() {
         return this.visblityPlay ? 'utility:chevronup' : 'utility:chevrondown';
