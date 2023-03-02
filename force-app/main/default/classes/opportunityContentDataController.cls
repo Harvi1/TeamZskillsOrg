@@ -14,7 +14,7 @@ public class opportunityContentDataController {
                 //system.debug('oppstagename-->>'+oppstagename);
                 contentList = [Select Id,Name, opportunity_stage__c, content_tags__c, document_title__c, 
                                thumbs_count__c, recommended_count__c, shared_count__c, views_count__c,time_created__c, 
-                               document_description__c,time_last_edited__c,CreatedBy.Name, CreatedDate From Content__c 
+                               document_description__c,time_last_edited__c,CreatedBy.Name, Show_Contents_Records__c,CreatedDate From Content__c 
                                WHERE opportunity_stage__c=:oppstagename AND op_is_current__c = True];
     
             }
@@ -37,7 +37,7 @@ public class opportunityContentDataController {
             system.debug('oppStageName-->> '+oppStage);
             List<Content__c> updatedcontentList = [Select Id,Name, opportunity_stage__c, content_tags__c, document_title__c, thumbs_count__c, 
                                                    recommended_count__c, shared_count__c, views_count__c,time_created__c, document_description__c,
-                                                   time_last_edited__c,CreatedBy.Name, CreatedDate From Content__c 
+                                                   time_last_edited__c,CreatedBy.Name, Show_Contents_Records__c,CreatedDate From Content__c 
                                                    WHERE opportunity_stage__c =: oppStage AND op_is_current__c = True];
             system.debug('contentList-->>'+updatedcontentList);
     
@@ -59,7 +59,7 @@ public class opportunityContentDataController {
             Set<Id> contIds = new Set<Id>();
             List<Content__c> mycontentList = [Select Id,Name, opportunity_stage__c, content_tags__c, document_title__c, thumbs_count__c, 
                                               recommended_count__c, shared_count__c, views_count__c,time_created__c, 
-                                              document_description__c,time_last_edited__c From Content__c
+                                              document_description__c,time_last_edited__c,Show_Contents_Records__c From Content__c
                                               WHERE opportunity_stage__c LIKE :keySearch OR 
                                               content_tags__c LIKE: keySearch OR 
                                               document_title__c LIKE :keySearch];
@@ -72,7 +72,7 @@ public class opportunityContentDataController {
 
             List<Content__c> conRchTxtList = [Select Id,Name, opportunity_stage__c, content_tags__c, document_title__c, thumbs_count__c, 
             recommended_count__c, shared_count__c, views_count__c,time_created__c, 
-            document_description__c,time_last_edited__c From Content__c];
+            document_description__c,time_last_edited__c,Show_Contents_Records__c From Content__c];
 
             for(Content__c cont : conRchTxtList){
                 if(cont.document_description__c != null && cont.document_description__c.contains(keySearch) && !contIds.contains(cont.Id)){

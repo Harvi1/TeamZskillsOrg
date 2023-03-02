@@ -16,10 +16,18 @@
     border: 1px solid black;
     border-style: hidden;
 }
-
+.my-icon{
+    --sds-c-icon-color-foreground-default: #fcc003;
+    /* --sds-c-icon-color-background: #fcc003; */
+}
 .scrollArea {
     position: relative;
 }
+.lableColor{
+    color: #0091CC;
+        
+}
+
 /*.slds-icon_container_circle {
     --slds-c-icon-radius-border: var(--lwc-borderRadiusCircle, 50%);
     padding: var(--lwc-spacingXSmall, 0.5rem);

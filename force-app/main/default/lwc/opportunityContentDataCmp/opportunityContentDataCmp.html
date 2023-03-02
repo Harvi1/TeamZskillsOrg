@@ -15,7 +15,8 @@
         </div>
         <br>
         <!---/Header Sales Plays -->
-        <div class="myheader slds-page-header slds-m-horizontal_medium" style="background: lightblue;">
+        <div class="myheader slds-page-header slds-m-horizontal_medium" style="background: #c4dff5; padding-top: 12px;padding-right: 12px;padding-bottom: 12px;
+            padding-left: 12px;">
             <div class="slds-page-header__row">
                 <div class="slds-page-header__col-title">
                     <div class="slds-media">
@@ -42,151 +43,198 @@
             <template if:true={onsearchshowrecord}>
                 <template for:each={records} for:item="ct">
                     <div key={ct.id}>
-                        <div class="slds-grid slds-wrap" style="margin-top: 10px;">
-                            <div class="slds-col slds-size_1-of-12">
+                        <div if:false={ct.Show_Contents_Records__c}>
+                            <div class="slds-grid slds-wrap" style="margin-top: 10px;">
+                                <div class="slds-col slds-size_1-of-12">
+                                </div>
+                                <div class="slds-col slds-size_1-of-12">
+                                    <lightning-icon slds-p-around_x-small icon-name="custom:custom7"> </lightning-icon>
 
-                            </div>
-                            <div class="slds-col slds-size_1-of-12">
-                                <lightning-icon icon-name="standard:javascript_button">
-                                </lightning-icon>
-                            </div>
-                            <div class="slds-col slds-size_8-of-12">
-                                <div class="slds-text-heading_medium slds-m-left_x-medium">
-                                    {ct.content_tags__c}
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 ">
+                                    <div class="slds-m-left_small slds-text-heading_medium lableColor">
+                                        {ct.content_tags__c}
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12">
+                                    <lightning-button-icon data-id={ct.Id} icon-name='utility:chevrondown'
+                                        variant="bare" alternative-text="chevrondown"
+                                        onclick={chevroniconShowHandleClick}>
+                                    </lightning-button-icon>
                                 </div>
                             </div>
-                            <div class="slds-col slds-size_2-of-12">
-                                <lightning-button-icon icon-name={iconName1} variant="bare"
-                                    alternative-text="chevrondown" onclick={playReducehandleClick}>
-                                </lightning-button-icon>
-                            </div>
-                        </div>
-                        <div class="slds-grid slds-wrap">
-                            <div class="slds-col slds-size_2-of-12">
-
-                            </div>
-                            <div class="slds-col slds-size_2-of-12" style="color: #c9c7c5;">
-                                <h3 class="header">
-                                    Last Updated:
-                                </h3>
-                            </div>
-                            <div class="slds-col slds-size_8-of-12" style="color: #c9c7c5;">
-                                <lightning-formatted-date-time title="Last Updated" value={ct.time_last_edited__c}
-                                    year="numeric" month="numeric" day="numeric" hour="2-digit" minute="2-digit"
-                                    time-zone-name="short" time-zone="America/New_York">
-                                </lightning-formatted-date-time>
-                            </div>
-                            <!-- <div class="slds-col slds-size_4-of-12" style="color: rgb(203, 189, 189);">
-                                <h2 class="header">
-                                    Last Updated:
-                                </h2>
-                            </div> -->
-                            <!-- <div class="slds-col slds-size_4-of-12">
-                                <lightning-formatted-date-time style="color: rgb(203, 189, 189);" title="Last Updated"
-                                    value={ct.time_last_edited__c} year="numeric" month="numeric" day="numeric"
-                                    hour="2-digit" minute="2-digit" time-zone-name="short" time-zone="America/New_York">
-                                </lightning-formatted-date-time>
-                            </div> -->
-                        </div>
-                        <div class="slds-grid slds-wrap slds-p-vertical_small">
-                            <div class="slds-col slds-size_1-of-12">
-
-                            </div>
-                            <div class="slds-col slds-size_1-of-12 slds-p-horizontal_small">
-                                <div class="slds-icon_container_circle slds-icon-standard-endorsement slds-icon_container"
-                                    style="background-color: #fe8f60;">
-                                    <lightning-icon icon-name="standard:endorsement" alternative-text="Like"
-                                        size="x-small" title="large size"
-                                        style="background-color:#fe8f60;"></lightning-icon>
+                            <div class="slds-grid slds-wrap slds-m-top_x-small">
+                                <div class="slds-col slds-size_2-of-12"></div>
+                                <div class="slds-col slds-size_10-of-12 slds-text-heading_small"
+                                    style="color: #c9c7c5;">
+                                    <span class="header slds-m-left_small">
+                                        Last Updated :
+                                    </span>
+                                    <lightning-formatted-date-time class="slds-m-left_xx-small" title="Last Updated"
+                                        value={ct.time_last_edited__c} year="numeric" month="numeric" day="numeric"
+                                        hour="2-digit" minute="2-digit" time-zone-name="short"
+                                        time-zone="America/New_York">
+                                    </lightning-formatted-date-time>
                                 </div>
                             </div>
-                            <div
-                                class="slds-col slds-size_1-of-12 slds-p-horizontal_small slds-m-left_small slds-m-top_xx-small">
-                                {ct.thumbs_count__c}
-                            </div>
-                            <div class="slds-col slds-size_1-of-12 slds-p-horizontal_small">
-                                <lightning-icon icon-name="action:announcement" size="xx-small"></lightning-icon>
-                            </div>
-                            <div
-                                class="slds-col slds-size_1-of-12 slds-p-horizontal_small slds-m-left_small slds-m-top_xx-small">
-                                {ct.recommended_count__c}
-                            </div>
-                            <div class="slds-col slds-size_1-of-12 slds-p-horizontal_small">
-                                <div class="slds-icon_container_circle slds-icon-standard-endorsement slds-icon_container"
-                                    style="background-color: #c9a697;">
-                                    <lightning-icon icon-name="utility:internal_share" alternative-text="share"
-                                        size="x-small" title="large size"
-                                        style="background-color:#c9a697;"></lightning-icon>
-                                </div>
-                            </div>
-                            <div
-                                class="slds-col slds-size_1-of-12 slds-p-horizontal_small slds-m-left_small slds-m-top_xx-small">
-                                {ct.shared_count__c}
-                            </div>
-                            <div class="slds-col slds-size_1-of-12 slds-p-horizontal_small">
-                                <lightning-icon icon-name="action:preview" size="xx-small"
-                                    style="background-color: #fe8f60;"></lightning-icon>
-                            </div>
-                            <div
-                                class="slds-col slds-size_1-of-12 slds-p-horizontal_small slds-m-left_small slds-m-top_xx-small">
-                                {ct.views_count__c}
-                            </div>
-                        </div>
-                        <template if:true={visblityPlay}>
                             <div class="slds-grid slds-wrap slds-p-vertical_small">
-                                <div class="slds-col slds-size_1-of-12"></div>
-                                <div class="slds-col slds-size_5-of-12">
-                                    <div style="width:10rem">
-                                        <div class="slds-file slds-file_card">
-                                            <p>
-                                                <b>
-                                                    Document Title:
-                                                </b>
-                                                {item.document_title__c}
-                                            </p>
-                                            <p>
-                                                <b>
-                                                    Document discription:
-                                                </b>
-                                                {item.document_description__c}
-                                            </p>
-                                            <p>
-                                                <b>
-                                                    Opportunity StageName:
-                                                </b>
-                                                {item.opportunity_stage__c}
-                                            </p>
-                                            <p>
-                                                <b>
-                                                    Created By:
-                                                </b>
-                                                {item.CreatedBy.Name}
-                                            </p>
-                                            <p>
-                                                <b>
-                                                    Created Date:
-                                                </b>
-                                                {item.CreatedDate}
-                                            </p>
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_12-of-12">
+                                        <div style="margin-left: 89px;">
+                                            <span
+                                                class="slds-icon_container_circle slds-icon-standard-endorsement slds-icon_container"
+                                                style="background-color: #fe8f60;">
+                                                <lightning-icon icon-name="standard:endorsement" alternative-text="Like"
+                                                    size="x-small" title="large size"
+                                                    style="background-color:#fe8f60;"></lightning-icon>
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                {ct.thumbs_count__c}
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                <lightning-icon icon-name="action:announcement"
+                                                    size="xx-small"></lightning-icon>
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                {ct.recommended_count__c}
+                                            </span>
+                                            <span
+                                                class="slds-m-left_large slds-icon_container_circle slds-icon-standard-endorsement slds-icon_container"
+                                                style="background-color: #c9a697;">
+                                                <lightning-icon icon-name="utility:internal_share"
+                                                    alternative-text="share" size="x-small" title="large size"
+                                                    style="background-color:#c9a697;"></lightning-icon>
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                {ct.shared_count__c}
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                <lightning-icon icon-name="action:preview" size="xx-small"
+                                                    style="background-color: #fe8f60;"></lightning-icon>
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                {ct.views_count__c}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="slds-col slds-size_6-of-12">
-                                    <div class="slds-text-body_regular">
-                                        The quick brown fox jumps over the lazy dog.
+                            </div>
+                        </div>
+
+
+
+
+
+
+                        <div if:true={ct.Show_Contents_Records__c}>
+                            <div class="slds-grid slds-wrap" style="margin-top: 10px;">
+                                <div class="slds-col slds-size_1-of-12">
+                                </div>
+                                <div class="slds-col slds-size_1-of-12">
+                                    <lightning-icon slds-p-around_x-small icon-name="custom:custom7"> </lightning-icon>
+
+                                </div>
+                                <div class="slds-col slds-size_8-of-12 ">
+                                    <div class="slds-m-left_small slds-text-heading_medium lableColor">
+                                        {ct.content_tags__c}
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_1-of-12">
+                                    <lightning-button-icon data-id={ct.Id} icon-name='utility:chevrondown'
+                                        variant="bare" alternative-text="chevrondown"
+                                        onclick={chevroniconShowHandleClick}>
+                                    </lightning-button-icon>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-wrap slds-m-top_x-small">
+                                <div class="slds-col slds-size_2-of-12"></div>
+                                <div class="slds-col slds-size_10-of-12 slds-text-heading_small"
+                                    style="color: #c9c7c5;">
+                                    <span class="header slds-m-left_small">
+                                        Last Updated :
+                                    </span>
+                                    <lightning-formatted-date-time class="slds-m-left_xx-small" title="Last Updated"
+                                        value={ct.time_last_edited__c} year="numeric" month="numeric" day="numeric"
+                                        hour="2-digit" minute="2-digit" time-zone-name="short"
+                                        time-zone="America/New_York">
+                                    </lightning-formatted-date-time>
+                                </div>
+                            </div>
+
+
+                            <div class="slds-grid slds-wrap slds-p-vertical_small">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_12-of-12">
+                                        <div style="margin-left: 89px;">
+                                            <span
+                                                class="slds-icon_container_circle slds-icon-standard-endorsement slds-icon_container"
+                                                style="background-color: #fe8f60;">
+                                                <lightning-icon icon-name="standard:endorsement" alternative-text="Like"
+                                                    size="x-small" title="large size"
+                                                    style="background-color:#fe8f60;"></lightning-icon>
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                {ct.thumbs_count__c}
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                <lightning-icon icon-name="action:announcement"
+                                                    size="xx-small"></lightning-icon>
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                {ct.recommended_count__c}
+                                            </span>
+                                            <span
+                                                class="slds-m-left_large slds-icon_container_circle slds-icon-standard-endorsement slds-icon_container"
+                                                style="background-color: #c9a697;">
+                                                <lightning-icon icon-name="utility:internal_share"
+                                                    alternative-text="share" size="x-small" title="large size"
+                                                    style="background-color:#c9a697;"></lightning-icon>
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                {ct.shared_count__c}
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                <lightning-icon icon-name="action:preview" size="xx-small"
+                                                    style="background-color: #fe8f60;"></lightning-icon>
+                                            </span>
+                                            <span class="slds-m-left_large">
+                                                {ct.views_count__c}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </template>
-                        <div class="slds-border_bottom">
+                            <div class="slds-border_bottom">
+                                <div class="slds-grid slds-wrap slds-p-vertical_small">
+                                    <div class="slds-col slds-size_1-of-12"></div>
+                                    <div class="slds-col slds-size_5-of-12">
+                                        <div style="width:10rem">
+                                            <div class="slds-file slds-file_card">
+                                                <figure>
+                                                    <a href="#" class="slds-file__crop">
+                                                        <span class="slds-assistive-text">Preview:</span>
+                                                        <img src={PDFIcon}>
+                                                    </a>
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-size_6-of-12">
+                                        <div class="slds-text-body_regular">Document
+                                            Description: {ct.document_description__c}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-border_bottom">
 
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <div key={ct.Id} class="slds-border_bottom"></div>
                 </template>
             </template>
         </div>
-
-
         <template if:true={NoData}>
             <div class="slds-is-relative slds-p-horizontal_medium">
                 <b>

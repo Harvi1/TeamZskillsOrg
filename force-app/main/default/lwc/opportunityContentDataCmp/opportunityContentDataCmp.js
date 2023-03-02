@@ -5,6 +5,8 @@ import getoppwithContentdata from '@salesforce/apex/opportunityContentDataContro
 import updatecontentData from '@salesforce/apex/opportunityContentDataController.updatecontentData';
 import retrieveContent from '@salesforce/apex/opportunityContentDataController.retrieveContent';
 import RevspaceImage from '@salesforce/resourceUrl/RevspaceImage';
+import Excel from '@salesforce/resourceUrl/Excel';
+import PDF from '@salesforce/resourceUrl/PDF';
 import STAGE_NAME from '@salesforce/schema/Opportunity.StageName';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -16,25 +18,27 @@ export default class OpportunityContentDataCmp extends LightningElement {
     @track oppstage;
     @track IsLoading = false;
     @track message;
-    @track serachkey = '';
     @track records = [];
     @track onsearchshowrecord = false;
-    @track onclickdata = false;
     @track searchStageName = '';
     subscription = {};
     @api channelName = '/event/Content_Event__e';
     NoData = false;
+    chevroniconShowHide = true;
     visblityPlay = false;
     visblityROI = false;
     opportunityStageName;
+    visblityPlay;
     @api recordId;
 
     RImage = RevspaceImage;
+    PDFIcon = PDF;
+    ExcelIcon = Excel;
 
     @wire(getRecord, { recordId: '$recordId', fields })
     opportunity;
 
-    constructor(){
+    constructor() {
         super();
     }
 
@@ -46,20 +50,22 @@ export default class OpportunityContentDataCmp extends LightningElement {
         // this.opportunityStageName = getFieldValue(this.opportunity.data, STAGE_NAME)
 
         getoppwithContentdata({ recordId: this.recordId })
-        .then(result => {
-            this.records = result;
-            this.onsearchshowrecord = true;
-            if (this.records.length > 0) {
-                this.NoData = false;
-            } else {
+            .then(result => {
+                var tempData = JSON.parse(JSON.stringify(result));
+                this.records = tempData;
+                console.log('this.records---connected------'+JSON.stringify(this.records));
+                this.onsearchshowrecord = true;
+                if (this.records.length > 0) {
+                    this.NoData = false;
+                } else {
+                    this.NoData = true;
+                }
+                this.IsLoading = false;
+            }).catch(error => {
+                this.records = null;
+                this.IsLoading = false;
                 this.NoData = true;
-            }
-            this.IsLoading = false;
-        }).catch(error => {
-            this.records = null;
-            this.IsLoading = false;
-            this.NoData = true;
-        })
+            })
 
         this.registerErrorListener();
         this.handleSubscribe();
@@ -88,10 +94,11 @@ export default class OpportunityContentDataCmp extends LightningElement {
     updatedwiredContentData({ error, data }) {
         this.IsLoading = true;
         if (data) {
-            this.records = data;
+            var tempdata = JSON.parse(JSON.stringify(data))
+            this.records = tempdata;
             console.log('60 wire method called!! getoppwithContentdata', JSON.stringify(this.records));
             this.IsLoading = false;
-            if (this.records.length>0) {
+            if (this.records.length > 0) {
                 console.log('63 wire method called!! getoppwithContentdata', JSON.stringify(this.records));
                 this.NoData = false;
             } else {
@@ -119,12 +126,12 @@ export default class OpportunityContentDataCmp extends LightningElement {
         };
         // Invoke subscribe method of empApi. Pass reference to messageCallback
         subscribe(this.channelName, -1, messageCallback)
-        .then(response => {
-            // Response contains the subscription information on subscribe call
-            console.log('Subscription request sent to: ', JSON.stringify(response.channel));
-            this.IsLoading = false;
-            this.subscription = response;
-        });
+            .then(response => {
+                // Response contains the subscription information on subscribe call
+                console.log('Subscription request sent to: ', JSON.stringify(response.channel));
+                this.IsLoading = false;
+                this.subscription = response;
+            });
     }
 
     registerErrorListener() {
@@ -140,51 +147,76 @@ export default class OpportunityContentDataCmp extends LightningElement {
     handleSearchchange(event) {
         this.searchStageName = event.target.value;
 
-        console.log('this.searchStageName lenght',this.searchStageName.length);
+        console.log('this.searchStageName lenght', this.searchStageName.length);
 
         this.IsLoading = true;
         if (this.searchStageName === '') {
             this.opportunityStageName = getFieldValue(this.opportunity.data, STAGE_NAME)
-            console.log('this.opportunityStageName--',this.opportunity.data);
+            console.log('this.opportunityStageName--', this.opportunity.data);
 
             retrieveContent({ keySearch: this.opportunityStageName })
-            .then(result => {
-                this.records = result;
-                this.onsearchshowrecord = true;
-                if (this.records.length > 0) {
-                    this.NoData = false;
-                } else {
+                .then(result => {
+                    var tempData = JSON.parse(JSON.stringify(result));
+                    this.records = tempData;
+                    this.onsearchshowrecord = true;
+                    if (this.records.length > 0) {
+                        this.NoData = false;
+                    } else {
+                        this.NoData = true;
+                    }
+                    this.IsLoading = false;
+                }).catch(error => {
+                    this.records = null;
+                    this.IsLoading = false;
                     this.NoData = true;
-                }
-                this.IsLoading = false;
-            }).catch(error => {
-                this.records = null;
-                this.IsLoading = false;
-                this.NoData = true;
-            })
+                })
         } else {
-            if(this.searchStageName.length <= 2){
+            if (this.searchStageName.length <= 2) {
                 this.IsLoading = false;
                 return
             }
 
             retrieveContent({ keySearch: this.searchStageName })
-            .then(result => {
-                this.records = result;
-                this.onsearchshowrecord = true;
-                if (this.records.length > 0) {
-                    this.NoData = false;
-                } else {
+                .then(result => {
+                    var tempData = JSON.parse(JSON.stringify(result));
+                    this.records = tempData;
+                    this.onsearchshowrecord = true;
+                    if (this.records.length > 0) {
+                        this.NoData = false;
+                    } else {
+                        this.NoData = true;
+                    }
+                    this.IsLoading = false;
+                }).catch(error => {
+                    this.records = null;
+                    this.IsLoading = false;
                     this.NoData = true;
-                }
-                this.IsLoading = false;
-            }).catch(error => {
-                this.records = null;
-                this.IsLoading = false;
-                this.NoData = true;
-            })
+                })
         }
     }
+    chevroniconShowHandleClick(event) {
+        var recId = event.target.dataset.id;
+        
+        this.records.forEach(element => {
+            if (recId == element.Id) {
+                if (element.Show_Contents_Records__c === false) {
+                    element.Show_Contents_Records__c = true;
+                } else {
+                    element.Show_Contents_Records__c = false;
+                }
+            } 
+        });
+        console.log(' this.records---------'+JSON.stringify(this.records));
+    }
+  /*  chevroniconHideHandleClick(event) {
+        /*const ct = event.target.dataset.id;
+        console.log('202 ct Id...', event.target.dataset.id);
+        visblityPlay = ct;
+        console.log('204 selectedContentId...',selectedContentId);
+        this.visblityPlay = false;
+        this.chevroniconShowHide = true;
+        console.log('Is visibility false???...',this.visblityPlay);
+    }*/
     // handleEnter() {
     //     this.IsLoading = true;
     //     if (this.searchStageName !== '') {
@@ -216,9 +248,15 @@ export default class OpportunityContentDataCmp extends LightningElement {
     //     }
     // }
 
-    get iconName1() {
-        return this.visblityPlay ? 'utility:chevronup' : 'utility:chevrondown';
-    }
+    // get iconName1() {
+    //     if (this.visblityPlay) {
+    //         return 'utility:chevronup';
+            
+    //     } else {
+    //         return 'utility:chevrondown';
+    //     }
+    //     //return this.visblityPlay ? 'utility:chevronup' : 'utility:chevrondown';
+    // }
 
     playReducehandleClick() {
         this.visblityROI = false;
