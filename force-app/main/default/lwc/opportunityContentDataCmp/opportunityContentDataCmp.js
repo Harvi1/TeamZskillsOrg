@@ -1,8 +1,8 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { subscribe, onError } from 'lightning/empApi';
-import getoppwithContentdata from '@salesforce/apex/opportunityContentDataController.getcontentdata';
-import updatecontentData from '@salesforce/apex/opportunityContentDataController.updatecontentData';
+import getoppwithContentdata from '@salesforce/apex/opportunityContentDataController.getContentData';
+import updatecontentData from '@salesforce/apex/opportunityContentDataController.updateContentData';
 import retrieveContent from '@salesforce/apex/opportunityContentDataController.retrieveContent';
 import RevspaceImage from '@salesforce/resourceUrl/RevspaceImage';
 import Excel from '@salesforce/resourceUrl/Excel';
@@ -19,7 +19,7 @@ export default class OpportunityContentDataCmp extends LightningElement {
     @track IsLoading = false;
     @track message;
     @track records = [];
-    @track onsearchshowrecord = false;
+    //@track onsearchshowrecord = false;
     @track searchStageName = '';
     subscription = {};
     @api channelName = '/event/Content_Event__e';
@@ -48,13 +48,21 @@ export default class OpportunityContentDataCmp extends LightningElement {
         // console.log('this.opportunityStageName--',this.recordId);
 
         // this.opportunityStageName = getFieldValue(this.opportunity.data, STAGE_NAME)
-
+        this.records = [];
         getoppwithContentdata({ recordId: this.recordId })
             .then(result => {
                 var tempData = JSON.parse(JSON.stringify(result));
-                this.records = tempData;
+                //this.records = tempData;
+
+                var conts = tempData;
+                for(var key in conts){
+                    this.records.push({value:conts[key], key:key}); //Here we are creating the array to show on UI.
+                }
+
+                
                 console.log('this.records---connected------'+JSON.stringify(this.records));
-                this.onsearchshowrecord = true;
+                console.log('this.records---connected------'+this.records.length);
+                //this.onsearchshowrecord = true;
                 if (this.records.length > 0) {
                     this.NoData = false;
                 } else {
@@ -62,7 +70,7 @@ export default class OpportunityContentDataCmp extends LightningElement {
                 }
                 this.IsLoading = false;
             }).catch(error => {
-                this.records = null;
+                this.records = [];
                 this.IsLoading = false;
                 this.NoData = true;
             })
@@ -84,7 +92,7 @@ export default class OpportunityContentDataCmp extends LightningElement {
     //     } else if (error) {
     //         this.error = error;
     //         console.log('47 wire method called!! getoppwithContentdata', JSON.stringify(error));
-    //         this.records = null;
+    //         this.records = [];
     //         this.IsLoading = false;
     //         this.NoData = true;
     //     }
@@ -93,9 +101,16 @@ export default class OpportunityContentDataCmp extends LightningElement {
     @wire(updatecontentData, { oppStage: '$oppstage' })
     updatedwiredContentData({ error, data }) {
         this.IsLoading = true;
+        this.records = [];
         if (data) {
             var tempdata = JSON.parse(JSON.stringify(data))
-            this.records = tempdata;
+            //this.records = tempdata;
+
+            var conts = tempdata;
+            for(var key in conts){
+                this.records.push({value:conts[key], key:key}); //Here we are creating the array to show on UI.
+            }
+
             console.log('60 wire method called!! getoppwithContentdata', JSON.stringify(this.records));
             this.IsLoading = false;
             if (this.records.length > 0) {
@@ -108,7 +123,7 @@ export default class OpportunityContentDataCmp extends LightningElement {
         } else if (error) {
             console.log('70 wire method called!! getoppwithContentdata', JSON.stringify(this.records));
             this.error = error;
-            this.records = null;
+            this.records = [];
             this.IsLoading = false;
             this.NoData = true;
         }
@@ -148,17 +163,25 @@ export default class OpportunityContentDataCmp extends LightningElement {
         this.searchStageName = event.target.value;
 
         console.log('this.searchStageName lenght', this.searchStageName.length);
-
         this.IsLoading = true;
+        this.records = [];
+
         if (this.searchStageName === '') {
+            this.records = [];
             this.opportunityStageName = getFieldValue(this.opportunity.data, STAGE_NAME)
             console.log('this.opportunityStageName--', this.opportunity.data);
 
             retrieveContent({ keySearch: this.opportunityStageName })
                 .then(result => {
-                    var tempData = JSON.parse(JSON.stringify(result));
-                    this.records = tempData;
-                    this.onsearchshowrecord = true;
+                    var tempdata = JSON.parse(JSON.stringify(result));
+                    //this.records = tempData;
+
+                    var conts = tempdata;
+                    for(var key in conts){
+                        this.records.push({value:conts[key], key:key}); //Here we are creating the array to show on UI.
+                    }
+
+                    //this.onsearchshowrecord = true;
                     if (this.records.length > 0) {
                         this.NoData = false;
                     } else {
@@ -166,21 +189,28 @@ export default class OpportunityContentDataCmp extends LightningElement {
                     }
                     this.IsLoading = false;
                 }).catch(error => {
-                    this.records = null;
+                    this.records = [];
                     this.IsLoading = false;
                     this.NoData = true;
                 })
         } else {
-            if (this.searchStageName.length <= 2) {
-                this.IsLoading = false;
-                return
-            }
+            // if (this.searchStageName.length <= 2) {
+            //     this.IsLoading = false;
+            //     return
+            // }
 
+            this.records = [];
             retrieveContent({ keySearch: this.searchStageName })
                 .then(result => {
-                    var tempData = JSON.parse(JSON.stringify(result));
-                    this.records = tempData;
-                    this.onsearchshowrecord = true;
+                    var tempdata = JSON.parse(JSON.stringify(result));
+                    //this.records = tempData;
+
+                    var conts = tempdata;
+                    for(var key in conts){
+                        this.records.push({value:conts[key], key:key}); //Here we are creating the array to show on UI.
+                    }
+
+                    //this.onsearchshowrecord = true;
                     if (this.records.length > 0) {
                         this.NoData = false;
                     } else {
@@ -188,12 +218,13 @@ export default class OpportunityContentDataCmp extends LightningElement {
                     }
                     this.IsLoading = false;
                 }).catch(error => {
-                    this.records = null;
+                    this.records = [];
                     this.IsLoading = false;
                     this.NoData = true;
                 })
         }
     }
+
     chevroniconShowHandleClick(event) {
         var recId = event.target.dataset.id;
         
@@ -231,7 +262,7 @@ export default class OpportunityContentDataCmp extends LightningElement {
     //             }
     //             this.IsLoading = false;
     //         }).catch(error => {
-    //             this.records = null;
+    //             this.records = [];
     //             this.IsLoading = false;
     //             this.NoData = true;
     //         })
