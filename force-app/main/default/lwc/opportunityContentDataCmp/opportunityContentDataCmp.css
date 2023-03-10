@@ -1,34 +1,26 @@
-.input-icon {
-    position: absolute;
-    z-index: 1;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 30px;
-    width: 30px;
-    right: 1.5rem;
-}
-.scrollContainer {
-    max-height: 400px;
-    overflow: auto;
-    position: relative;
-    border: 1px solid black;
-    border-style: hidden;
-}
-.my-icon{
-    --sds-c-icon-color-foreground-default: #fcc003;
-    /* --sds-c-icon-color-background: #fcc003; */
-}
-.scrollArea {
-    position: relative;
-}
 .lableColor{
-    color: #0091CC;
-        
+    color: #2B8BDB;
+    font-family: 'Lato', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    align-items: center;
+    margin-top: 5px;     
 }
 
-/*.slds-icon_container_circle {
-    --slds-c-icon-radius-border: var(--lwc-borderRadiusCircle, 50%);
-    padding: var(--lwc-spacingXSmall, 0.5rem);
-}*/
+.sldstags{
+    font-family: 'Lato',sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 14px;
+    color: #1D1D1D;
+    background-color: #AFC4DE;
+    align-items: center;
+    border-radius: unset;
+    padding-top: 12px;
+    padding-right: 12px;
+    padding-bottom: 12px;
+    padding-left: 12px;
+    height: 30px;  
+}

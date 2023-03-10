@@ -21,7 +21,8 @@ public class opportunityContentDataController {
                                                         Name, 
                                                         opportunity_stage__c, 
                                                         content_tags__c, 
-                                                        document_title__c, 
+                                                        document_title__c,
+                                                		document_url__c,
                                                         thumbs_count__c, 
                                                         recommended_count__c, 
                                                         shared_count__c, 
@@ -31,7 +32,9 @@ public class opportunityContentDataController {
                                                         time_last_edited__c, 
                                                         CreatedBy.Name, 
                                                         Show_Contents_Records__c, 
-                                                        CreatedDate 
+                                                        CreatedDate,
+                                                        document_thumbnail_url__c,
+                                                        document_icon_url__c
                                                 FROM Content__c 
                                                 WHERE opportunity_stage__c =: oppStageName 
                                                 AND op_is_current__c = true];
@@ -76,11 +79,13 @@ public class opportunityContentDataController {
             Map<string, List<Content__c>> conWrapMap = new Map<string, List<Content__c>>();
 
             system.debug('oppStageName-->> '+oppStage);
+            
             List<Content__c> updatedcontentList = [SELECT Id, 
                                                         Name, 
                                                         opportunity_stage__c, 
                                                         content_tags__c, 
-                                                        document_title__c, 
+                                                        document_title__c,
+                                                   		document_url__c,
                                                         thumbs_count__c, 
                                                         recommended_count__c, 
                                                         shared_count__c, 
@@ -90,7 +95,9 @@ public class opportunityContentDataController {
                                                         time_last_edited__c,
                                                         CreatedBy.Name, 
                                                         Show_Contents_Records__c,
-                                                        CreatedDate 
+                                                        CreatedDate,
+                                                        document_thumbnail_url__c,
+                                                        document_icon_url__c
                                                     FROM Content__c 
                                                     WHERE opportunity_stage__c =: oppStage 
                                                     AND op_is_current__c = True];
@@ -112,11 +119,13 @@ public class opportunityContentDataController {
 
         try {
             Set<Id> contIds = new Set<Id>();
+
             List<Content__c> mycontentList = [SELECT Id,
                                                     Name, 
                                                     opportunity_stage__c, 
                                                     content_tags__c, 
-                                                    document_title__c, 
+                                                    document_title__c,
+                                              		document_url__c,
                                                     thumbs_count__c, 
                                                     recommended_count__c, 
                                                     shared_count__c, 
@@ -124,7 +133,11 @@ public class opportunityContentDataController {
                                                     time_created__c, 
                                                     document_description__c,
                                                     time_last_edited__c,
-                                                    Show_Contents_Records__c 
+                                                    CreatedBy.Name,
+                                                    CreatedDate,
+                                                    Show_Contents_Records__c,
+                                                    document_thumbnail_url__c,
+                                                    document_icon_url__c
                                             FROM Content__c
                                             WHERE opportunity_stage__c LIKE :keySearch 
                                             OR content_tags__c LIKE: keySearch 
@@ -140,7 +153,8 @@ public class opportunityContentDataController {
                                                     Name, 
                                                     opportunity_stage__c, 
                                                     content_tags__c, 
-                                                    document_title__c, 
+                                                    document_title__c,
+                                                    document_url__c,
                                                     thumbs_count__c, 
                                                     recommended_count__c, 
                                                     shared_count__c, 
@@ -148,7 +162,11 @@ public class opportunityContentDataController {
                                                     time_created__c, 
                                                     document_description__c,
                                                     time_last_edited__c,
-                                                    Show_Contents_Records__c 
+                                                    CreatedBy.Name,
+                                                    CreatedDate,
+                                                    Show_Contents_Records__c,
+                                                    document_thumbnail_url__c,
+                                                    document_icon_url__c
                                             FROM Content__c];
 
             for(Content__c cont : conRchTxtList){
